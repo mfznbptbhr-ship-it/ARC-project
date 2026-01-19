@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>ARC PROJECT | GoreBox RP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: radial-gradient(circle at top, #2b0000, #000);
+    color: #fff;
+}
+
+/* ===== NEON ANIMATION ===== */
+@keyframes neonPulse {
+    0% { text-shadow: 0 0 10px red; }
+    50% { text-shadow: 0 0 25px red, 0 0 40px #ff2a2a; }
+    100% { text-shadow: 0 0 10px red; }
+}
+
+@keyframes glowBox {
+    0% { box-shadow: 0 0 10px red; }
+    50% { box-shadow: 0 0 30px red; }
+    100% { box-shadow: 0 0 10px red; }
+}
+
+/* ===== HEADER ===== */
+header {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+header h1 {
+    font-size: 70px;
+    color: #ff2a2a;
+    animation: neonPulse 2s infinite;
+    margin: 0;
+}
+
+header p {
+    opacity: 0.8;
+}
+
+/* ===== NAV ===== */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background: #100;
+    padding: 15px;
+    flex-wrap: wrap;
+}
+
+nav button {
+    background: transparent;
+    border: 2px solid #ff2a2a;
+    color: #ff2a2a;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+nav button:hover {
+    background: #ff2a2a;
+    color: #000;
+    animation: glowBox 1.5s infinite;
+}
+
+/* ===== CONTENT ===== */
+section {
+    display: none;
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+}
+
+section.active {
+    display: block;
+}
+
+.card {
+    background: rgba(255,0,0,0.05);
+    border: 1px solid #ff2a2a;
+    padding: 20px;
+    margin-bottom: 20px;
+    animation: glowBox 3s infinite;
+}
+
+.play-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background: #ff2a2a;
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.status {
+    color: #00ff6a;
+    text-shadow: 0 0 10px #00ff6a;
+}
+
+/* ===== REVIEWS ===== */
+input, textarea {
+    width: 100%;
+    background: #100;
+    border: 1px solid red;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.review {
+    border-bottom: 1px solid #400;
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>ARC</h1>
+    <p>GoreBox Full RolePlay Project</p>
+</header>
+
+<nav>
+    <button onclick="openTab('home')">Главная</button>
+    <button onclick="openTab('rules')">Правила</button>
+    <button onclick="openTab('modes')">Режимы</button>
+    <button onclick="openTab('reviews')">Отзывы</button>
+    <button onclick="openAdmin()">Админ</button>
+</nav>
+
+<section id="home" class="active">
+    <div class="card">
+        <h2>Добро пожаловать в ARC</h2>
+        <p id="adminMsg">Полное погружение в жёсткий Full RP.</p>
+        <a class="play-btn" href="https://t.me/ARCGBRP" target="_blank">НАЧАТЬ ИГРАТЬ</a>
+    </div>
+</section>
+
+<section id="rules">
+    <div class="card">
+        <h2>Full RP правила</h2>
+        <p>❌ Metagaming</p>
+        <p>❌ PowerGaming</p>
+        <p>❌ NonRP</p>
+        <p>❌ RDM / VDM</p>
+        <p>✔ Цени жизнь персонажа</p>
+    </div>
+</section>
+
+<section id="modes">
+    <div class="card">
+        <h2>ГОРОД RP</h2>
+        <p>Статус: <span class="status">АКТИВНО</span></p>
+    </div>
+</section>
+
+<section id="reviews">
+    <div class="card">
+        <h2>Отзывы игроков</h2>
+        <input id="name" placeholder="Ваш ник">
+        <textarea id="text" placeholder="Отзыв"></textarea>
+        <button onclick="addReview()">Отправить</button>
+        <div id="reviewList"></div>
+    </div>
+</section>
+
+<section id="admin">
+    <div class="card">
+        <h2>Админ панель</h2>
+        <textarea id="adminText" placeholder="Админ сообщение"></textarea>
+        <button onclick="saveAdminMsg()">Сохранить сообщение</button>
+        <button onclick="clearReviews()">Очистить отзывы</button>
+    </div>
+</section>
+
+<footer>© ARC PROJECT</footer>
+
+<script>
+const adminPassword = "arcadmin2025";
+
+function openTab(id){
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+function openAdmin(){
+    const pass = prompt("Введите пароль администратора:");
+    if(pass === adminPassword){
+        openTab("admin");
+    } else {
+        alert("Неверный пароль");
+    }
+}
+
+/* ===== REVIEWS ===== */
+function loadReviews(){
+    const data = JSON.parse(localStorage.getItem("reviews") || "[]");
+    const list = document.getElementById("reviewList");
+    list.innerHTML = "";
+    data.forEach(r=>{
+        list.innerHTML += `<div class="review"><b>${r.name}</b>: ${r.text}</div>`;
+    });
+}
+
+function addReview(){
+    const name = document.getElementById("name").value;
+    const text = document.getElementById("text").value;
+    if(!name || !text) return;
+    const data = JSON.parse(localStorage.getItem("reviews") || "[]");
+    data.push({name,text});
+    localStorage.setItem("reviews", JSON.stringify(data));
+    loadReviews();
+}
+
+function clearReviews(){
+    localStorage.removeItem("reviews");
+    loadReviews();
+}
+
+/* ===== ADMIN MESSAGE ===== */
+function saveAdminMsg(){
+    const msg = document.getElementById("adminText").value;
+    localStorage.setItem("adminMsg", msg);
+    document.getElementById("adminMsg").innerText = msg;
+}
+
+document.getElementById("adminMsg").innerText =
+    localStorage.getItem("adminMsg") || "Полное погружение в жёсткий Full RP.";
+
+loadReviews();
+setInterval(loadReviews, 2000);
+</script>
+
+</body>
+</html>
