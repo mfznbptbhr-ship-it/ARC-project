@@ -2,127 +2,106 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>ARC PROJECT | GoreBox RP</title>
+<title>ARC | GoreBox RP</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
     background: radial-gradient(circle at top, #2b0000, #000);
-    color: #fff;
-}
-
-/* ===== NEON ANIMATION ===== */
-@keyframes neonPulse {
-    0% { text-shadow: 0 0 10px red; }
-    50% { text-shadow: 0 0 25px red, 0 0 40px #ff2a2a; }
-    100% { text-shadow: 0 0 10px red; }
-}
-
-@keyframes glowBox {
-    0% { box-shadow: 0 0 10px red; }
-    50% { box-shadow: 0 0 30px red; }
-    100% { box-shadow: 0 0 10px red; }
+    color: white;
 }
 
 /* ===== HEADER ===== */
 header {
-    text-align: center;
-    padding: 50px 20px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #100;
+    border-bottom: 1px solid red;
+}
+
+.menu-btn {
+    font-size: 26px;
+    cursor: pointer;
+    margin-right: 15px;
 }
 
 header h1 {
-    font-size: 70px;
     color: #ff2a2a;
-    animation: neonPulse 2s infinite;
+    text-shadow: 0 0 20px red;
     margin: 0;
 }
 
-header p {
-    opacity: 0.8;
-}
-
-/* ===== NAV ===== */
+/* ===== MENU ===== */
 nav {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+    display: none;
+    flex-direction: column;
     background: #100;
-    padding: 15px;
-    flex-wrap: wrap;
+    border-bottom: 1px solid red;
 }
 
 nav button {
-    background: transparent;
-    border: 2px solid #ff2a2a;
+    background: none;
+    border: none;
     color: #ff2a2a;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-nav button:hover {
-    background: #ff2a2a;
-    color: #000;
-    animation: glowBox 1.5s infinite;
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+    border-bottom: 1px solid #300;
 }
 
 /* ===== CONTENT ===== */
 section {
     display: none;
+    padding: 20px;
     max-width: 900px;
     margin: auto;
-    padding: 30px;
 }
 
-section.active {
-    display: block;
-}
+section.active { display: block; }
 
 .card {
+    border: 1px solid red;
+    padding: 15px;
+    margin-bottom: 15px;
     background: rgba(255,0,0,0.05);
-    border: 1px solid #ff2a2a;
-    padding: 20px;
-    margin-bottom: 20px;
-    animation: glowBox 3s infinite;
 }
 
-.play-btn {
-    display: inline-block;
-    padding: 15px 30px;
-    background: #ff2a2a;
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 15px;
-}
-
-.status {
-    color: #00ff6a;
-    text-shadow: 0 0 10px #00ff6a;
-}
-
-/* ===== REVIEWS ===== */
-input, textarea {
+/* ===== INPUT ===== */
+input, textarea, button {
     width: 100%;
+    padding: 10px;
+    margin-top: 10px;
     background: #100;
     border: 1px solid red;
     color: white;
-    padding: 10px;
-    margin-bottom: 10px;
 }
 
+button {
+    cursor: pointer;
+}
+
+/* ===== REVIEW ===== */
 .review {
+    display: flex;
+    gap: 10px;
     border-bottom: 1px solid #400;
     padding: 10px 0;
-    font-size: 14px;
 }
 
-footer {
-    text-align: center;
-    padding: 20px;
+.avatar {
+    font-size: 28px;
+}
+
+.time {
+    font-size: 12px;
     opacity: 0.6;
+}
+
+.coin {
+    color: #ffd700;
 }
 </style>
 </head>
@@ -130,49 +109,70 @@ footer {
 <body>
 
 <header>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
     <h1>ARC</h1>
-    <p>GoreBox Full RolePlay Project</p>
 </header>
 
-<nav>
+<nav id="menu">
     <button onclick="openTab('home')">Главная</button>
-    <button onclick="openTab('rules')">Правила</button>
-    <button onclick="openTab('modes')">Режимы</button>
+    <button onclick="openTab('auth')">Регистрация / Вход</button>
+    <button onclick="openTab('rules')">Правила RP</button>
+    <button onclick="openTab('shop')">Магазин</button>
     <button onclick="openTab('reviews')">Отзывы</button>
     <button onclick="openAdmin()">Админ</button>
 </nav>
 
 <section id="home" class="active">
     <div class="card">
-        <h2>Добро пожаловать в ARC</h2>
-        <p id="adminMsg">Полное погружение в жёсткий Full RP.</p>
-        <a class="play-btn" href="https://t.me/ARCGBRP" target="_blank">НАЧАТЬ ИГРАТЬ</a>
+        <h2>Профиль</h2>
+        <p>Игрок: <b id="playerName">—</b></p>
+        <p>Баланс: <b class="coin"><span id="coins">0</span> ARC Coins</b></p>
+    </div>
+</section>
+
+<section id="auth">
+    <div class="card">
+        <h2>Регистрация</h2>
+        <input id="regNick" placeholder="Ник">
+        <input id="regPass" type="password" placeholder="Пароль">
+        <button onclick="register()">Зарегистрироваться</button>
+    </div>
+
+    <div class="card">
+        <h2>Вход</h2>
+        <input id="logNick" placeholder="Ник">
+        <input id="logPass" type="password" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
     </div>
 </section>
 
 <section id="rules">
     <div class="card">
         <h2>Full RP правила</h2>
-        <p>❌ Metagaming</p>
-        <p>❌ PowerGaming</p>
-        <p>❌ NonRP</p>
-        <p>❌ RDM / VDM</p>
-        <p>✔ Цени жизнь персонажа</p>
+        <p><b>Metagaming</b> — использование OOC информации в IC.</p>
+        <p><b>PowerGaming</b> — игнор физики, боли, страха.</p>
+        <p><b>NonRP</b> — нереалистичное поведение.</p>
+        <p><b>RDM</b> — убийство без RP-причины.</p>
+        <p><b>VDM</b> — использование транспорта как оружия.</p>
+        <p><b>FearRP</b> — страх за жизнь ОБЯЗАТЕЛЕН.</p>
+        <p><b>Value of Life</b> — жизнь персонажа ценна.</p>
+        <p><b>IC / OOC</b> — запрещено смешивание.</p>
     </div>
 </section>
 
-<section id="modes">
+<section id="shop">
     <div class="card">
-        <h2>ГОРОД RP</h2>
-        <p>Статус: <span class="status">АКТИВНО</span></p>
+        <h2>Магазин</h2>
+        <p>🎨 Покраска оружия (Город RP)</p>
+        <p>Цена: <b class="coin">150 ARC Coins</b></p>
+        <button onclick="buy()">Купить</button>
     </div>
 </section>
 
 <section id="reviews">
     <div class="card">
-        <h2>Отзывы игроков</h2>
-        <input id="name" placeholder="Ваш ник">
-        <textarea id="text" placeholder="Отзыв"></textarea>
+        <h2>Отзывы</h2>
+        <textarea id="reviewText" placeholder="Отзыв"></textarea>
         <button onclick="addReview()">Отправить</button>
         <div id="reviewList"></div>
     </div>
@@ -181,68 +181,117 @@ footer {
 <section id="admin">
     <div class="card">
         <h2>Админ панель</h2>
-        <textarea id="adminText" placeholder="Админ сообщение"></textarea>
-        <button onclick="saveAdminMsg()">Сохранить сообщение</button>
-        <button onclick="clearReviews()">Очистить отзывы</button>
+        <input id="adminNick" placeholder="Ник игрока">
+        <input id="adminCoins" type="number" placeholder="ARC Coins">
+        <button onclick="giveCoins()">Выдать валюту</button>
     </div>
 </section>
 
-<footer>© ARC PROJECT</footer>
-
 <script>
-const adminPassword = "arcadmin2025";
+let currentUser = null;
+const adminPass = "arcadmin2025";
+
+function toggleMenu(){
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "flex" ? "none" : "flex";
+}
 
 function openTab(id){
     document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
+    document.getElementById("menu").style.display="none";
+    updateUI();
 }
 
 function openAdmin(){
-    const pass = prompt("Введите пароль администратора:");
-    if(pass === adminPassword){
-        openTab("admin");
-    } else {
-        alert("Неверный пароль");
-    }
+    const p = prompt("Пароль админа:");
+    if(p===adminPass) openTab("admin");
 }
 
-/* ===== REVIEWS ===== */
-function loadReviews(){
-    const data = JSON.parse(localStorage.getItem("reviews") || "[]");
-    const list = document.getElementById("reviewList");
-    list.innerHTML = "";
-    data.forEach(r=>{
-        list.innerHTML += `<div class="review"><b>${r.name}</b>: ${r.text}</div>`;
-    });
+function getUsers(){
+    return JSON.parse(localStorage.getItem("users")||"{}");
+}
+
+function saveUsers(u){
+    localStorage.setItem("users",JSON.stringify(u));
+}
+
+function register(){
+    const n=regNick.value,p=regPass.value;
+    const u=getUsers();
+    if(u[n]) return alert("Ник занят");
+    u[n]={pass:p,coins:100};
+    saveUsers(u);
+    alert("Готово");
+}
+
+function login(){
+    const n=logNick.value,p=logPass.value;
+    const u=getUsers();
+    if(!u[n]||u[n].pass!==p) return alert("Ошибка");
+    currentUser=n;
+    localStorage.setItem("currentUser",n);
+    openTab("home");
+}
+
+function updateUI(){
+    currentUser=localStorage.getItem("currentUser");
+    if(!currentUser) return;
+    const u=getUsers();
+    playerName.textContent=currentUser;
+    coins.textContent=u[currentUser].coins;
+}
+
+function buy(){
+    const u=getUsers();
+    if(u[currentUser].coins<150) return alert("Недостаточно средств");
+    u[currentUser].coins-=150;
+    saveUsers(u);
+    updateUI();
+    alert("Покупка успешна");
 }
 
 function addReview(){
-    const name = document.getElementById("name").value;
-    const text = document.getElementById("text").value;
-    if(!name || !text) return;
-    const data = JSON.parse(localStorage.getItem("reviews") || "[]");
-    data.push({name,text});
-    localStorage.setItem("reviews", JSON.stringify(data));
+    if(!currentUser) return alert("Войдите");
+    const r=JSON.parse(localStorage.getItem("reviews")||"[]");
+    r.push({nick:currentUser,text:reviewText.value,time:new Date().toLocaleString()});
+    localStorage.setItem("reviews",JSON.stringify(r));
     loadReviews();
 }
 
-function clearReviews(){
-    localStorage.removeItem("reviews");
+function loadReviews(){
+    const r=JSON.parse(localStorage.getItem("reviews")||"[]");
+    reviewList.innerHTML="";
+    r.forEach((e,i)=>{
+        reviewList.innerHTML+=`
+        <div class="review">
+            <div class="avatar">👤</div>
+            <div>
+                <b>${e.nick}</b>
+                <div class="time">${e.time}</div>
+                <div>${e.text}</div>
+                <button onclick="deleteReview(${i})">Удалить</button>
+            </div>
+        </div>`;
+    });
+}
+
+function deleteReview(i){
+    const r=JSON.parse(localStorage.getItem("reviews"));
+    r.splice(i,1);
+    localStorage.setItem("reviews",JSON.stringify(r));
     loadReviews();
 }
 
-/* ===== ADMIN MESSAGE ===== */
-function saveAdminMsg(){
-    const msg = document.getElementById("adminText").value;
-    localStorage.setItem("adminMsg", msg);
-    document.getElementById("adminMsg").innerText = msg;
+function giveCoins(){
+    const u=getUsers();
+    u[adminNick.value].coins+=Number(adminCoins.value);
+    saveUsers(u);
+    alert("Выдано");
 }
-
-document.getElementById("adminMsg").innerText =
-    localStorage.getItem("adminMsg") || "Полное погружение в жёсткий Full RP.";
 
 loadReviews();
-setInterval(loadReviews, 2000);
+updateUI();
 </script>
 
 </body>
